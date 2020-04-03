@@ -1,58 +1,72 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableHighlight } from 'react-native';
 
-// export default function App() {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.text}>Hello World!</Text>
-//     </View>
-//   );
-// }
-
 export default class Game extends Component {
-  state={
-    secret:0,
-    input:'',
-    feedback:''
+  state = {
+    secret: 0,
+    input: '',
+    feedback: '',
+    guessesRemaining: 5
   }
 
   //function to pick random number
-  generateRandon(){
-    return Math.round(Math.random()*100)
+  generateRandon() {
+    return Math.round(Math.random() * 100)
   }
 
   //function to initialise game
-  init(){
+  init() {
     const secretNumber = this.generateRandon()
-    this.setState({secret: secretNumber})
+    // const guessesRemaining=5
+    this.setState({ secret: secretNumber })
   }
 
   //lifecycle component
-  componentDidMount(){
+  componentDidMount() {
     this.init()
   }
 
-  updateInput=(value)=>{this.setState({input:value})}
+  updateInput = (value) => { this.setState({ input: value }) }
 
-  checkGuess =()=>{
+  checkGuess = () => {
     const userGuess = parseInt(this.state.input);
     const secretNumber = this.state.secret;
-    if (userGuess == secretNumber){
-      this.setState({feedback:'Correct! The number is: ' + secretNumber})
+    const remainingGuess = this.state.guessesRemaining--;
+    // guessesRemaining--;
+
+    //no guesses remaining
+    if (remainingGuess <= 0) {
+      this.setState({ feedback: 'You are out of chances' })
       return
     }
-    if (userGuess < secretNumber){
-      this.setState({feedback:'The number is higher than ' + userGuess})
+
+    if (userGuess == secretNumber) {
+      this.setState({ feedback: 'Correct! The number is: ' + secretNumber })
       return
     }
-    if (userGuess > secretNumber){
-      this.setState({feedback:'The number is lower than ' + userGuess})
-      return
+
+    if (userGuess < secretNumber) {
+      //  i--;
+      this.setState({
+        feedback: 'The number is higher than ' + userGuess +
+          '. Number of guess remaining: ' + remainingGuess
+      })
+
     }
+    if (userGuess > secretNumber) {
+      // i--;
+      this.setState({
+        feedback: 'The number is lower than ' + userGuess +
+          '. Number of guess remaining: ' + remainingGuess
+      })
+
+    }
+    return;
+    // }
   }
 
-  render(){
-    return(
+  render() {
+    return (
       <View style={StyleSheet.container}>
         <Text>Guess my number</Text>
         <TextInput style={styles.input} keyboardType='number-pad' onChangeText={this.updateInput}></TextInput>
@@ -66,12 +80,12 @@ export default class Game extends Component {
 }
 
 const styles = StyleSheet.create({
-  button:{
-    width:200,
-    padding:10,
-    backgroundColor:'lightblue',
-    marginTop:20,
-    alignItems:'center'
+  button: {
+    width: 200,
+    padding: 10,
+    backgroundColor: 'lightblue',
+    marginTop: 20,
+    alignItems: 'center'
   },
   container: {
     flex: 1,
@@ -79,11 +93,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  text:{
+  text: {
     color: '#ff33ff',
     fontSize: 32
   },
-  input:{
+  input: {
     backgroundColor: '#ffffff'
   }
 });
